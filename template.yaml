@@ -1,0 +1,161 @@
+AWSTemplateFormatVersion : '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: A sample Lambda Safe Deployment Application
+
+Resources:
+
+  encryptedBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: aws:kms
+
+  unencryptedBucket:
+    Type: 'AWS::S3::Bucket'
+
+  encryptedTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: version
+          AttributeType: 'N'
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        - AttributeName: version
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      SSESpecification:
+        SSEEnabled: true
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+   
+  unencryptedTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: version
+          AttributeType: 'N'
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        - AttributeName: version
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+  
+  myFirstFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: myFirstFunction.handler
+      CodeUri: src/
+      Runtime: nodejs8.10
+      AutoPublishAlias: live
+      DeploymentPreference:
+          Type: Linear10PercentEvery1Minute
+          Hooks:
+            PreTraffic: !Ref preTrafficHook
+      Events:
+        GetResource:
+          Type: Api
+          Properties:
+            Path: /first
+            Method: ANY
+
+  mySecondFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: mySecondFunction.handler
+      CodeUri: src/
+      Runtime: nodejs8.10
+      AutoPublishAlias: live
+      DeploymentPreference:
+          Type: Canary10Percent5Minutes
+          Hooks:
+            PreTraffic: !Ref preTrafficHook
+      Events:
+        GetResource:
+          Type: Api
+          Properties:
+            Path: /second
+            Method: ANY
+
+  preTrafficHook:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: preTrafficHook.handler
+      CodeUri: src/      
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+          - Effect: "Allow"
+            Action:
+              - "codedeploy:PutLifecycleEventHookExecutionStatus"
+            Resource:
+              !Sub 'arn:aws:codedeploy:${AWS::Region}:${AWS::AccountId}:deploymentgroup:${ServerlessDeploymentApplication}/*'
+        - Version: "2012-10-17"
+          Statement:
+          - Effect: "Allow"
+            Action:
+              - "lambda:InvokeFunction"
+            Resource:
+              - !GetAtt myFirstFunction.Arn
+              - !Ref myFirstFunction.Version
+              - !GetAtt mySecondFunction.Arn
+              - !Ref mySecondFunction.Version
+        - Version: "2012-10-17"
+          Statement:
+          - Effect: "Allow"
+            Action:
+              - "cloudformation:ListStackResources"
+            Resource: !Ref AWS::StackId
+        - Version: "2012-10-17"
+          Statement:
+          - Effect: "Allow"
+            Action:
+              - "cloudwatch:putMetricData"
+            Resource: "*"
+        - Version: "2012-10-17"
+          Statement:
+          - Effect: "Allow"
+            Action:
+              - "s3:GetEncryptionConfiguration"
+            Resource:
+              - !GetAtt encryptedBucket.Arn
+              - !GetAtt unencryptedBucket.Arn
+        - Version: "2012-10-17"
+          Statement:
+          - Effect: "Allow"
+            Action:
+              - "dynamodb:DescribeTable"
+            Resource:
+              - !GetAtt encryptedTable.Arn
+              - !GetAtt unencryptedTable.Arn
+        - Version: "2012-10-17"
+          Statement:
+          - Effect: "Allow"
+            Action:
+              - "config:GetComplianceDetailsByResource"
+            Resource: "*"
+      Runtime: nodejs8.10
+      Timeout: 60
+      FunctionName: 'CodeDeployHook_preTrafficHook'
+      DeploymentPreference:
+        Enabled: false
+      Environment:
+        Variables:
+          StackId: !Ref AWS::StackId
+          CurrentVersion: !Ref myFirstFunction.Version
+          Namespace: !Ref AWS::StackName
+          MetricName: "Fitness"
