@@ -13,7 +13,7 @@ The [AWS SAM](https://github.com/awslabs/serverless-application-model) `template
 * 2 [Lambda functions](https://aws.amazon.com/lambda/) (`myFirstFunction` and `mySecondFunction`) that implement a basic API (using the [Amazon API Gateway](https://aws.amazon.com/api-gateway/))
 * a `preTrafficHook` Lambda function that is used to measure the fitness of the architecture and posts the result as a [CloudWatch metric that you can monitor, alarm or visualize in a dashboard](https://aws.amazon.com/cloudwatch/)
 
-To test the deployment, you can use the following *package*/*deploy* commands _two_ times:
+To test the deployment, you can use the following `package`/`deploy` commands _two_ times:
 
 * the _first_ time to create the [CloudFormation stack](https://aws.amazon.com/cloudformation/) for the application, as described above
 * the _second_ time to update the stack, see how safe deployments work, and how the fitness of the architeture is measured by the PreTraffic function
