@@ -47,5 +47,30 @@ Most of the tests involve invocations to AWS services, so to make it more effici
 * all tests are implemented as `async` functions (so that are automatically wrapped as promises)
 * all tests are added to a list (array) that is then executed using `Promises.all()`
 
+For example, some of the tests that can be implemented on non-functional requirements, such as security and scalability, are:
+* check that encryption at rest is enabled on all S3 buckets
+* check that encryption at rest is enabled on all DynamoDB tables
+* check that public write and/or read is prohibited for all S3 buckets
+* check that S3 buckets accept HTTPS requests only
+* check that auto scaling is enabled for all DynamoDB tables
+
+Those checks contribute to the measurement of the fitness function, so that if you change you architecture (and possibly your application) to be more secure or scalable, you automatically increase the resulting fitness.
+
+Instead of implementing all tests, you can leverage the existing [AWS Config managed rules](https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_use-managed-rules.html), such as:
+* s3-bucket-logging-enabled
+* s3-bucket-replication-enabled
+* s3-bucket-versioning-enabled
+* s3-bucket-public-write-prohibited
+* s3-bucket-public-read-prohibited
+* s3-bucket-ssl-requests-only
+* s3-bucket-server-side-encryption-enabled
+* dynamodb-autoscaling-enabled
+* dynamodb-throughput-limit-check
+* lambda-function-public-access-prohibited
+* lambda-function-settings-check
+
+A full lists of AWS Config managed rules is available [here](https://docs.aws.amazon.com/config/latest/developerguide/managed-rules-by-aws-config.html). To check the compliance to one or more of those ruse, I am using the AWS Config `getComplianceDetailsByResource` API.
+
+
 For more information, please see this article:
 
