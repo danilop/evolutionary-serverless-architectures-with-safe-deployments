@@ -19,6 +19,7 @@ let currentFunctionName; // To be read from the context
 let deploymentStatus;
 
 
+// Manage AWS API pagination, returning a single array
 async function manageApiPagination(objectToCall, methodToCall, params, keyToReturn) {
 	let list = [];
 	do {
@@ -90,8 +91,8 @@ async function testDynamoDBEncryption(table) {
 
 
 // Check that a DynamoDB Table has Continuous Backup enabled
-// Can be implemented using the DynamoDB DescribeContinuousBackups API
-async function testDynamoDBBackup(table) { return 0 } // TODO
+// TODO Can be implemented using the DynamoDB DescribeContinuousBackups API
+async function testDynamoDBBackup(table) { return 0 }
 
 
 // Check that an S3 Bucket has encryption at rest enabled
@@ -126,8 +127,8 @@ async function testS3EncryptionAtRest(bucket) {
 
 
 // Check that all S3 Buckets have HTTPS-only access (SecureTransport)
-// Can be implemented checking the Condition of the Bucket Policy
-async function testS3EncryptionInTransit(bucket) { return 0 } // TODO
+// TODO Can be implemented checking the Condition of the Bucket Policy
+async function testS3EncryptionInTransit(bucket) { return 0 }
 
 
 // Check compliance to AWS Config Rules
@@ -147,11 +148,12 @@ async function checkCompliance(resourceType, resourceId) {
 	return localFitness;
 }
 
+// Run tests on all CLoudFormation resources in the stack
 async function runTests() {
 
 	let tests = [];
 
-	// Unit tests
+	// Integration tests such as syntetic transactions
 	tests.push(testFunction(functionName)); // With version
 
 	// Check all resources in the stack
@@ -202,6 +204,7 @@ async function runTests() {
 }
 
 
+// Report to AWS CodeDeploy the success or failure of the deployment
 async function reportExecutionStatus(deploymentId, lifecycleEventHookExecutionId, status) {
 	if (deploymentId == null) {
 		console.log("No deployment requested.");
