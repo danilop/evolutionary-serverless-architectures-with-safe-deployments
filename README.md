@@ -28,6 +28,9 @@ aws cloudformation deploy -template-file packaged.yaml \
     -stack-name EvolutionaryDeployment -capabilities CAPABILITY_IAM
 ```
 
+You can follow the first implementation of the stack, and the next updates, from the [CloudFormation console](https://console.aws.amazon.com/cloudformation/). The previous commands use the [default region set for the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html).
+Optionally, you can use the new [AWS SAM CLI](https://github.com/awslabs/aws-sam-cli) to validate the template and package/deploy the application. The SAM CLI adds lots of development features that I am not using in this article.
+
 For the two Lambda functions providing an API, different deployment strategies are implemented:
 
 * `myFirstFunction` is using a Linear deployment adding 10% of the invocations to the new version every minute (`Linear10PercentEvery1Minute`)
