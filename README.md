@@ -72,7 +72,7 @@ Instead of implementing all tests, you can leverage the existing [AWS Config man
 * lambda-function-public-access-prohibited
 * lambda-function-settings-check
 
-A full lists of AWS Config managed rules is available [here](https://docs.aws.amazon.com/config/latest/developerguide/managed-rules-by-aws-config.html). To check the compliance to one or more of those ruse, I am using the AWS Config `getComplianceDetailsByResource` API.
+A full lists of AWS Config managed rules is available [here](https://docs.aws.amazon.com/config/latest/developerguide/managed-rules-by-aws-config.html). To check the compliance to one or more of those rules, I am using the AWS Config `getComplianceDetailsByResource` API.
 
 
 For more information, please see this article:
