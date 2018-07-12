@@ -1,6 +1,6 @@
 # Evolutionary Serverless Architectures with Safe Deployments
 
-A Sample Implementation of an [evolutionary architecture](https://www.thoughtworks.com/insights/blog/microservices-evolutionary-architecture) for a [serverless](https://aws.amazon.com/serverless/) application using [safe deployments](https://docs.aws.amazon.com/lambda/latest/dg/automating-updates-to-serverless-apps.html), automatically computing the fitness function at deployment time, with the possibility to rollback if fitness is not improving.
+A sample implementation of an [evolutionary architecture](https://www.thoughtworks.com/insights/blog/microservices-evolutionary-architecture) for a [serverless](https://aws.amazon.com/serverless/) application using [safe deployments](https://docs.aws.amazon.com/lambda/latest/dg/automating-updates-to-serverless-apps.html), automatically computing the fitness function at deployment time, with the possibility to rollback if fitness is not improving.
 
 Made with ❤️ by Danilo Poccia.
 
