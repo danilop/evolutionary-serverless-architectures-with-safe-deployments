@@ -15,19 +15,20 @@ The [AWS SAM](https://github.com/awslabs/serverless-application-model) `template
 * 2 [Lambda functions](https://aws.amazon.com/lambda/) (`myFirstFunction` and `mySecondFunction`) that implement a basic API (using the [Amazon API Gateway](https://aws.amazon.com/api-gateway/))
 * a `preTrafficHook` Lambda function that is used to measure the fitness of the architecture and posts the result as a [CloudWatch metric that you can monitor, alarm or visualize in a dashboard](https://aws.amazon.com/cloudwatch/)
 
-To test the deployment, you can use the following `package`/`deploy` commands _two_ times:
+To test the deployment, you can use the [SAM CLI](https://aws.amazon.com/serverless/sam/) and the following `package`/`deploy` commands _two_ times:
 
 * the _first_ time to create the [CloudFormation stack](https://aws.amazon.com/cloudformation/) for the application, as described above
 * the _second_ time to update the stack, see how safe deployments work, and how the fitness of the architeture is measured by the PreTraffic function
 
 ```
-aws cloudformation package -s3-bucket <YOUR_BUCKET> -s3-prefix packages \
-    -template-file template.yaml -output-template-file packaged.yaml
+sam package --s3-bucket <YOUR_BUCKET> \
+            --output-template-file packaged.yaml
 ```
 
 ```
-aws cloudformation deploy -template-file packaged.yaml \
-    -stack-name EvolutionaryDeployment -capabilities CAPABILITY_IAM
+sam deploy --template-file packaged.yaml \
+           --stack-name evolutionary-deployment \
+           --capabilities CAPABILITY_IAM
 ```
 
 You can follow the first implementation of the stack, and the next updates, from the [CloudFormation console](https://console.aws.amazon.com/cloudformation/). The previous commands use the [default region set for the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html).
