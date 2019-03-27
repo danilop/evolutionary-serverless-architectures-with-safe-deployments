@@ -32,12 +32,11 @@ sam deploy --template-file packaged.yaml \
 ```
 
 You can follow the first implementation of the stack, and the next updates, from the [CloudFormation console](https://console.aws.amazon.com/cloudformation/). The previous commands use the [default region set for the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html).
-Optionally, you can use the new [AWS SAM CLI](https://github.com/awslabs/aws-sam-cli) to validate the template and package/deploy the application. The SAM CLI adds lots of development features that I am not using in this article.
 
 For the two Lambda functions providing an API, different deployment strategies are implemented:
 
 * `myFirstFunction` is using a Linear deployment adding 10% of the invocations to the new version every minute (`Linear10PercentEvery1Minute`)
-* `mySecondFunction` is using a Canary deployment with 10% of the invocations to the new version for 5 minutes, and then a rollaout to 100% (`Canary10Percent5Minutes`)
+* `mySecondFunction` is using a Canary deployment with 10% of the invocations to the new version for 5 minutes, and then a rollout to 100% (`Canary10Percent5Minutes`)
 
 To update the Lambda functions in this template with a second deployment, you need to change something in the code in the `src/` folder (or at least save one of the source files again, so that there is a different timestamp).
 
