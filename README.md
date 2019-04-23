@@ -15,17 +15,17 @@ The [AWS SAM](https://github.com/awslabs/serverless-application-model) `template
 * 2 [Lambda functions](https://aws.amazon.com/lambda/) (`myFirstFunction` and `mySecondFunction`) that implement a basic API (using the [Amazon API Gateway](https://aws.amazon.com/api-gateway/))
 * a `preTrafficHook` Lambda function that is used to measure the fitness of the architecture and posts the result as a [CloudWatch metric that you can monitor, alarm or visualize in a dashboard](https://aws.amazon.com/cloudwatch/)
 
-To test the deployment, you can use the [SAM CLI](https://aws.amazon.com/serverless/sam/) and the following `package`/`deploy` commands _two_ times:
+To test the deployment, you can use the [SAM CLI](https://aws.amazon.com/serverless/sam/) and the following `build`/`package`/`deploy` commands _two_ times:
 
-* the _first_ time to create the [CloudFormation stack](https://aws.amazon.com/cloudformation/) for the application, as described above
-* the _second_ time to update the stack, see how safe deployments work, and how the fitness of the architeture is measured by the PreTraffic function
+* the _first_ time to create the [CloudFormation stack](https://aws.amazon.com/cloudformation/) for the application
+* the _second_ time to update the stack, see how safe deployments work and follow them in the CodeDeploy console, and how the fitness of the architecture is measured by the PreTraffic function and updated in a custom CloudWatch metric
 
 ```
+sam build
+
 sam package --s3-bucket <YOUR_BUCKET> \
             --output-template-file packaged.yaml
-```
 
-```
 sam deploy --template-file packaged.yaml \
            --stack-name evolutionary-deployment \
            --capabilities CAPABILITY_IAM
@@ -35,10 +35,8 @@ You can follow the first implementation of the stack, and the next updates, from
 
 For the two Lambda functions providing an API, different deployment strategies are implemented:
 
-* `myFirstFunction` is using a Linear deployment adding 10% of the invocations to the new version every minute (`Linear10PercentEvery1Minute`)
+* `myFirstFunction` is using a Linear deployment adding 10% of the invocations to the new version every minute (`Linear10PercentEvery1Minute`), taking 10 minutes to complete
 * `mySecondFunction` is using a Canary deployment with 10% of the invocations to the new version for 5 minutes, and then a rollout to 100% (`Canary10Percent5Minutes`)
-
-To update the Lambda functions in this template with a second deployment, you need to change something in the code in the `src/` folder (or at least save one of the source files again, so that there is a different timestamp).
 
 The preTrafficHook function is running some tests to check if the deployment must `Succeed` or `Fail` and at the same time is computing the value of the fitness function for this deployment:
 * some of the tests are actually *atomic* fitness functions themselves, testing a single reource in the CloudFormation stack
