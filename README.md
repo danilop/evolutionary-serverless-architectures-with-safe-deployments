@@ -22,14 +22,10 @@ To test the deployment, you can use the [SAM CLI](https://aws.amazon.com/serverl
 
 ```
 sam build
-```
 
-```
 sam package --s3-bucket <YOUR_BUCKET> \
             --output-template-file packaged.yaml
-```
 
-```
 sam deploy --template-file packaged.yaml \
            --stack-name evolutionary-deployment \
            --capabilities CAPABILITY_IAM
