@@ -1,0 +1,19 @@
+{
+  "name": "src",
+  "version": "1.0.0",
+  "description": "A sample Lambda Safe Deployment Application using Evolutionary Architectures",
+  "main": "myFirstFunction.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danilop/evolutionary-serverless-architectures-with-safe-deployments.git"
+  },
+  "author": "Danilo Poccia",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/danilop/evolutionary-serverless-architectures-with-safe-deployments/issues"
+  },
+  "homepage": "https://github.com/danilop/evolutionary-serverless-architectures-with-safe-deployments#readme"
+}
