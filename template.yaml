@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion : '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: A sample Lambda Safe Deployment Application
+Description: A sample Lambda Safe Deployment Application using Evolutionary Architectures
 
 Resources:
 
@@ -52,6 +52,8 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
+      SSESpecification:
+        SSEEnabled: false
       StreamSpecification:
         StreamViewType: NEW_AND_OLD_IMAGES
   
@@ -157,5 +159,14 @@ Resources:
         Variables:
           StackId: !Ref AWS::StackId
           CurrentVersion: !Ref myFirstFunction.Version
-          Namespace: !Ref AWS::StackName
           MetricName: "Fitness"
+
+Outputs:
+
+  FirstAPI:
+    Description: "API Gateway endpoint URL for Prod stage for myFirstFunction"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/first/"
+
+  SecondAPI:
+    Description: "API Gateway endpoint URL for Prod stage for mySecondFunction"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/second/"
